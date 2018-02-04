@@ -1,0 +1,17 @@
+{
+  "name": "track-view-model",
+  "version": "0.0.1",
+  "description": "A model of view.",
+  "main": "lib/index.js",
+  "scripts": {
+    "linter": "eslint ./",
+    "test": "ospec"
+  },
+  "author": "alfa-jpn",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-google": "^0.9.1",
+    "track-spec": "0.0.2"
+  }
+}
