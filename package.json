@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A model of view.",
   "main": "lib/index.js",
+  "repository": "alfa-jpn/track-view-model.git",
   "scripts": {
     "linter": "eslint ./",
     "test": "ospec"
