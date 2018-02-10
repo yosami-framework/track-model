@@ -13,6 +13,7 @@
   "devDependencies": {
     "eslint": "^4.17.0",
     "eslint-config-google": "^0.9.1",
+    "track-i18n": "0.0.2",
     "track-spec": "0.0.2"
   }
 }

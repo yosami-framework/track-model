@@ -8,20 +8,15 @@ t.describe('TrackViewModel', () => {
   t.beforeEach(() => {
     mock = new (class extends TrackViewModel {
       /**
-       * Define attributes.
-       * @param {AttributeBuilder} attr Builder of attribute.
+       * Definitions of model.
        */
-      attributes(attr) {
-        attr.accessor('hoge');
-        attr.accessor('piyo');
-      }
+      static definer() {
+        name('mock');
 
-      /**
-       * Define validations.
-       * @param {AttributeBuilder} column Builder of validation.
-       */
-      validations(column) {
-        column.validate('hoge', [{validator: 'Length', options: {max: 10}}]);
+        accessor('hoge');
+        accessor('piyo');
+
+        validate('hoge', [{validator: 'Length', options: {max: 10}}]);
       }
     })();
   });
@@ -107,7 +102,7 @@ t.describe('TrackViewModel', () => {
       t.it('Set error', () => {
         subject();
         t.expect(mock.errors['hoge'].type).equals('too_long');
-        t.expect(mock.errors['hoge'].options).deepEquals({count: 10});
+        t.expect(mock.errors['hoge'].options.count).equals(10);
       });
     });
 
