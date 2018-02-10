@@ -15,17 +15,19 @@ npm install track-view-model
 const TrackViewModel = require('track-view-model');
 
 class Hoge extends TrackViewModel {
-  attributes(attr) {
-    attr.accessor('hoge'); // Define `hoge.hoge` and `hoge.hoge=`
-    attr.reader('fuga');   // Define `hoge.fuga`
-    attr.writer('piyo');   // Define `hoge.piyo=`
+  static definer() {
+    name('hoge'); // Define model name. **Required**
+
+    accessor('hoge'); // Define `hoge.hoge` and `hoge.hoge=`
+    reader('fuga');   // Define `hoge.fuga`
+    writer('piyo');   // Define `hoge.piyo=`
 
     // Can define multiple.
-    attr.accessor('foo', 'bar');
-  }
+    accessor('foo', 'bar');
 
-  validations(column) {
-    column.validate('hoge', [
+    // Define validation of #hoge.
+    // (require value, and value.length <= 100)
+    validate('hoge', [
       {validator: 'Presence'},
       {validator: 'Length', options: {max: 100}},
     ]);
@@ -37,11 +39,14 @@ class Hoge extends TrackViewModel {
 const hoge = new Hoge({piyo: 'PIYO'});
 
 hoge.validate('hoge'); // => falsey
-hoge.errors('hoge');   // => Error {type: 'blank'}
+hoge.errors['hoge'];   // => Error {type: 'blank'}
+hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
 
 hoge.hoge = 'abcdefg';
 hoge.validate('hoge'); // => truthy
-hoge.errors('hoge');   // => null, undefined (falsey)
+hoge.errors['hoge'];   // => null, undefined (falsey)
+
+
 
 hoge.toObject(); // => Object {hoge: 'abcdefg'}
 ```
