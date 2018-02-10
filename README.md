@@ -57,11 +57,11 @@ hoge.toObject(); // => Object {hoge: 'abcdefg'}
   - `ex) {validator: 'Presence'}`
     - `ng) null undefined ''`
 - LengthValidator
-  - `ex) {validator: 'Length', {max: 10, min: 5}}`
+  - `ex) {validator: 'Length', options: {max: 10, min: 5}}`
     - `ng) 'abcd' 'abcdefghijk'`
 - NumericalValidator
-  - `ex) {validator: 'Numerical', {max: 10, min: 5}}`
+  - `ex) {validator: 'Numerical', options: {max: 10, min: 5}}`
     - `ng) 4 11 'abc'`
 - FormatValidator
-  - `ex) {validator: 'Format', {regex: /.+@.+/}}`
+  - `ex) {validator: 'Format', options: {regex: /.+@.+/}}`
     - `ng) 'abcd'`
