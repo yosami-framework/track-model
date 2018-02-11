@@ -27,10 +27,7 @@ class Hoge extends TrackViewModel {
 
     // Define validation of #hoge.
     // (require value, and value.length <= 100)
-    validate('hoge', [
-      {validator: 'Presence'},
-      {validator: 'Length', options: {max: 100}},
-    ]);
+    validate('hoge', {presence: true, length: {max: 100}});
   }
 }
 ```
@@ -51,17 +48,33 @@ hoge.errors['hoge'];   // => null, undefined (falsey)
 hoge.toObject(); // => Object {hoge: 'abcdefg'}
 ```
 
-### Build-in validators
+## Build-in validators
 
 - PresenceValidator
-  - `ex) {validator: 'Presence'}`
+  - `ex) validate('hoge', {presence: true})`
     - `ng) null undefined ''`
 - LengthValidator
-  - `ex) {validator: 'Length', options: {max: 10, min: 5}}`
+  - `ex) validate('hoge', {length: {max: 10, min: 5}})`
     - `ng) 'abcd' 'abcdefghijk'`
 - NumericalValidator
-  - `ex) {validator: 'Numerical', options: {max: 10, min: 5}}`
+  - `ex) validate('hoge', {numerical: {max: 10, min: 5}})`
     - `ng) 4 11 'abc'`
+- FunctionValidator
+  - `ex) validate('hoge', {function: {validate: checkHoge}})`
+    - @see FunctionValidatorExample
 - FormatValidator
-  - `ex) {validator: 'Format', options: {regex: /.+@.+/}}`
+  - `ex) validate('hoge', {format: {regex: /.+@.+/}})`
     - `ng) 'abcd'`
+
+### FunctionValidatorExample
+
+```javascript
+const Error = require('track-view-model/validators/error');
+const checkHoge = function(value) {
+  if (value != 'hoge') {
+    return new Error('is not Hoge.');
+  }
+};
+
+validate('hoge', {function: {validate: checkHoge}})
+```

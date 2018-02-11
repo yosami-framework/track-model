@@ -17,7 +17,7 @@ t.describe('Builder', () => {
         reader('fuga');
         writer('piyo');
 
-        validate('hoge', [{validator: 'Length', options: {max: 10}}]);
+        validate('hoge', {length: {max: 10}});
       }
     })();
     Builder.build(mock);

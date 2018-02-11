@@ -16,7 +16,8 @@ t.describe('TrackViewModel', () => {
         accessor('hoge');
         accessor('piyo');
 
-        validate('hoge', [{validator: 'Length', options: {max: 10}}]);
+        validate('piyo', {presence: true});
+        validate('hoge', {length: {max: 10}});
       }
     })();
   });
@@ -119,6 +120,20 @@ t.describe('TrackViewModel', () => {
         subject();
         t.expect(mock.errors['hoge']).equals(null);
       });
+    });
+  });
+
+  t.describe('#validateAll', () => {
+    const subject = (() => mock.validateAll());
+
+    t.beforeEach(() => {
+      mock.validate = t.spy();
+    });
+
+    t.it('Call vadalite', () => {
+      subject();
+      t.expect(mock.validate.callCount).equals(2);
+      t.expect(mock.validate.args[0]).equals('hoge');
     });
   });
 });
