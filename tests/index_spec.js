@@ -1,6 +1,7 @@
 const t               = require('track-spec');
 const TrackViewModel  = require('../lib/index.js');
 const LengthValidator = require('../lib/validators/length_validator');
+const Error           = require('../lib/validators/error');
 
 t.describe('TrackViewModel', () => {
   let mock = null;
@@ -13,11 +14,18 @@ t.describe('TrackViewModel', () => {
       static definer() {
         name('mock');
 
-        accessor('hoge');
-        accessor('piyo');
+        accessor('hoge', 'piyo');
 
-        validate('piyo', {presence: true});
         validate('hoge', {length: {max: 10}});
+        validate('piyo', {function: {validate: this.validatePiyo}});
+      }
+
+      /**
+       * Validate piyo.
+       * @return {Error} Error.
+       */
+      validatePiyo() {
+        return new Error('is_not_piyo');
       }
     })();
   });
@@ -89,7 +97,12 @@ t.describe('TrackViewModel', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = (() => mock.validate('hoge'));
+    const subject = (() => mock.validate(attr));
+    let attr = null;
+
+    t.beforeEach(() => {
+      attr = 'hoge';
+    });
 
     t.context('When has error', () => {
       t.beforeEach(() => {
@@ -121,6 +134,22 @@ t.describe('TrackViewModel', () => {
         t.expect(mock.errors['hoge']).equals(null);
       });
     });
+
+    t.context('When FunctionValidator', () => {
+      t.beforeEach(() => {
+        attr = 'piyo';
+        mock.piyo = 'hahaha';
+      });
+
+      t.it('Return falsey', () => {
+        t.expect(!!subject()).equals(false);
+      });
+
+      t.it('Set error', () => {
+        subject();
+        t.expect(mock.errors['piyo'].type).equals('is_not_piyo');
+      });
+    });
   });
 
   t.describe('#validateAll', () => {
@@ -133,7 +162,7 @@ t.describe('TrackViewModel', () => {
     t.it('Call vadalite', () => {
       subject();
       t.expect(mock.validate.callCount).equals(2);
-      t.expect(mock.validate.args[0]).equals('hoge');
+      t.expect(mock.validate.args[0]).equals('piyo');
     });
   });
 });
