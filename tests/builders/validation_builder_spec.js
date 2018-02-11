@@ -12,15 +12,7 @@ t.describe('ValidationBuilder', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => builder.validate('hoge', validations));
-    let validations = null;
-
-    t.beforeEach(() => {
-      validations = [{
-        validator: 'Length',
-        options:   {max: 100},
-      }];
-    });
+    const subject = (() => builder.validate('hoge', {length: {max: 100}}));
 
     t.it('Create validation', () => {
       subject();
@@ -29,43 +21,6 @@ t.describe('ValidationBuilder', () => {
       const validator  = validation.validators[0];
       t.expect(validator instanceof LengthValidator).equals(true);
       t.expect(validator.options.max).equals(100);
-    });
-
-    t.context('When options has ValidatorClass', () => {
-      t.beforeEach(() => {
-        validations = [{
-          validator: LengthValidator,
-          options:   {min: 50},
-        }];
-      });
-
-      t.it('Create validation', () => {
-        subject();
-
-        const validation = mock._validations['hoge'];
-        const validator  = validation.validators[0];
-        t.expect(validator instanceof LengthValidator).equals(true);
-        t.expect(validator.options.min).equals(50);
-      });
-    });
-
-    t.context('When options has function', () => {
-      let func = null;
-
-      t.beforeEach(() => {
-        func = t.spy();
-        validations = [{
-          validator: func,
-        }];
-      });
-
-      t.it('Create validation', () => {
-        subject();
-
-        const validation = mock._validations['hoge'];
-        const validator  = validation.validators[0];
-        t.expect(validator.validate).equals(func);
-      });
     });
   });
 });

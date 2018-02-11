@@ -5,7 +5,7 @@ t.describe('PresenceValidator', () => {
   let validator = null;
 
   t.beforeEach(() => {
-    validator = new Validator();
+    validator = new Validator(true);
   });
 
   t.describe('#validate', () => {
