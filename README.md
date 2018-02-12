@@ -25,15 +25,29 @@ class Hoge extends TrackViewModel {
     // Define accessor with onchange callback.
     accessor('foo', {onchanage: ((newly, older) => alert(`change ${older} to ${newly}`))});
 
+    // Define async reader.
+    // - cache:   60sec
+    // - default: []
+    asyncReader('bars', {default: [], expiresIn: 60}, this._fetchBars);
+
     // Define validation of #hoge.
     // (require value, and value.length <= 100)
     validate('hoge', {presence: true, length: {max: 100}});
+  }
+
+  _fetchBars() {
+    if (this.foo) {
+      return m.request(`/bars?foo_id=${foo.id}`); // @see mithril doc `m.request`
+    }
   }
 }
 ```
 
 ```javascript
 const hoge = new Hoge({piyo: 'PIYO'});
+
+hoge.hoge = 'hogehoge!';
+hoge.hoge; // => "hogehoge!"
 
 hoge.validate('hoge').then(() => {
   // When success.
@@ -46,8 +60,20 @@ hoge.validate('hoge').then(() => {
 
 hoge.validateAll().then(/*...*/).catch(/*...*/);
 
-
 hoge.toObject(); // => Object {hoge: 'abcdefg'}
+
+
+// ## asyncReader ##
+hoge.bars; // [];
+hoge.foo = {id: 1};
+hoge.bars; // [];
+
+// after fetch
+hoge.bars; // [{id: 1}, {id: 2}]
+
+// clear cache
+hoge._bars.clear();
+
 ```
 
 ## Build-in validators

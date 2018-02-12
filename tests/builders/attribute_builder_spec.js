@@ -1,5 +1,6 @@
-const t                = require('track-spec');
-const AttributeBuilder = require('../../lib/builders/attribute_builder.js');
+const t                    = require('track-spec');
+const AsyncAttributeReader = require('../../lib/async_attribute_reader.js');
+const AttributeBuilder     = require('../../lib/builders/attribute_builder.js');
 
 t.describe('AttributeBuilder', () => {
   let builder = null;
@@ -80,6 +81,17 @@ t.describe('AttributeBuilder', () => {
       mock.hoge = 'HOGE';
 
       t.expect(mock._hoge).equals('HOGE');
+    });
+  });
+
+  t.describe('#asyncReader', () => {
+    const subject = (() => builder.asyncReader('hoge', {default: 'piyo'}, (() => null)));
+
+    t.it('Create async reader', () => {
+      subject();
+
+      t.expect(mock._hoge instanceof AsyncAttributeReader).equals(true);
+      t.expect(mock.hoge).equals('piyo');
     });
   });
 });
