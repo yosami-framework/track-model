@@ -14,7 +14,8 @@ t.describe('TrackViewModel', () => {
       static definer() {
         name('mock');
 
-        accessor('hoge', 'piyo');
+        accessor('hoge');
+        accessor('piyo');
 
         validate('hoge', {length: {max: 10}});
         validate('piyo', {function: {validate: this.validatePiyo}});
@@ -22,10 +23,12 @@ t.describe('TrackViewModel', () => {
 
       /**
        * Validate piyo.
-       * @return {Error} Error.
+       * @param {object}   value   Value.
+       * @param {function} resolve Callback for success validation.
+       * @param {function} reject  Callback for failed validation.
        */
-      validatePiyo() {
-        return new Error('is_not_piyo');
+      validatePiyo(value, resolve, reject) {
+        reject(new Error('is_not_piyo'));
       }
     })();
   });
@@ -109,14 +112,21 @@ t.describe('TrackViewModel', () => {
         mock.hoge = 'abcdefghijk';
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Reject', () => {
+        return new Promise((resolve, reject) => {
+          subject().then(() => {
+            reject('Be not rejected.');
+          }).catch(() => {
+            resolve();
+          });
+        });
       });
 
       t.it('Set error', () => {
-        subject();
-        t.expect(mock.errors['hoge'].type).equals('too_long');
-        t.expect(mock.errors['hoge'].options.count).equals(10);
+        return subject().catch(() => {
+          t.expect(mock.errors['hoge'].type).equals('too_long');
+          t.expect(mock.errors['hoge'].options.count).equals(10);
+        });
       });
     });
 
@@ -125,13 +135,20 @@ t.describe('TrackViewModel', () => {
         mock.hoge = 'abc';
       });
 
-      t.it('Return truthy', () => {
-        t.expect(!!subject()).equals(true);
+      t.it('Resolve', () => {
+        return new Promise((resolve, reject) => {
+          subject().then(() => {
+            resolve();
+          }).catch(() => {
+            reject('Be not resolved.');
+          });
+        });
       });
 
       t.it('Set error to null', () => {
-        subject();
-        t.expect(mock.errors['hoge']).equals(null);
+        return subject().then(() => {
+          t.expect(mock.errors['hoge']).equals(null);
+        });
       });
     });
 
@@ -141,13 +158,20 @@ t.describe('TrackViewModel', () => {
         mock.piyo = 'hahaha';
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Reject', () => {
+        return new Promise((resolve, reject) => {
+          subject().then(() => {
+            reject('Be not rejected.');
+          }).catch(() => {
+            resolve();
+          });
+        });
       });
 
       t.it('Set error', () => {
-        subject();
-        t.expect(mock.errors['piyo'].type).equals('is_not_piyo');
+        return subject().catch(() => {
+          t.expect(mock.errors['piyo'].type).equals('is_not_piyo');
+        });
       });
     });
   });
@@ -156,13 +180,17 @@ t.describe('TrackViewModel', () => {
     const subject = (() => mock.validateAll());
 
     t.beforeEach(() => {
-      mock.validate = t.spy();
+      mock.validate = t.spy(() => new Promise(() => null));
     });
 
     t.it('Call vadalite', () => {
       subject();
       t.expect(mock.validate.callCount).equals(2);
       t.expect(mock.validate.args[0]).equals('piyo');
+    });
+
+    t.it('Return promise', () => {
+      t.expect(subject() instanceof Promise).equals(true);
     });
   });
 });

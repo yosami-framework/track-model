@@ -6,21 +6,28 @@ t.describe('FunctionValidator', () => {
   let options   = null;
 
   t.beforeEach(() => {
-    options = {validate: t.spy(() => 'mockReturningValue')};
+    options = {validate: t.spy((value, resolve, reject) => null)};
     validator = new Validator(options);
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => validator.validate('mockValue'));
+    const subject = ( () => validator.validate(value, resolve, reject));
+    let value   = null;
+    let resolve = null;
+    let reject  = null;
 
-    t.it('Call validate function', () => {
+    t.beforeEach(() => {
+      resolve = t.spy();
+      reject = t.spy();
+      value = 'mockValue';
+    });
+
+    t.it('Call with value and resolve and reject', () => {
       subject();
       t.expect(options.validate.callCount).equals(1);
       t.expect(options.validate.args[0]).equals('mockValue');
-    });
-
-    t.it('Return function value', () => {
-      t.expect(subject()).equals('mockReturningValue');
+      t.expect(options.validate.args[1]).equals(resolve);
+      t.expect(options.validate.args[2]).equals(reject);
     });
   });
 });

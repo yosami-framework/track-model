@@ -11,16 +11,25 @@ t.describe('LengthValidator', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => validator.validate(value));
-    let value = null;
+    const subject = ( () => validator.validate(value, resolve, reject));
+    let value   = null;
+    let resolve = null;
+    let reject  = null;
+
+    t.beforeEach(() => {
+      resolve = t.spy();
+      reject = t.spy();
+    });
 
     t.context('When has no error.', () => {
       t.beforeEach(() => {
         value = 'abcdef';
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -29,8 +38,10 @@ t.describe('LengthValidator', () => {
         value = undefined;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -39,9 +50,12 @@ t.describe('LengthValidator', () => {
         value = 'abcd';
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('too_short');
-        t.expect(subject().options.count).equals(5);
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('too_short');
+        t.expect(reject.args[0].options.count).equals(5);
       });
     });
 
@@ -50,9 +64,12 @@ t.describe('LengthValidator', () => {
         value = 'abcdefghijk';
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('too_long');
-        t.expect(subject().options.count).equals(10);
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('too_long');
+        t.expect(reject.args[0].options.count).equals(10);
       });
     });
   });

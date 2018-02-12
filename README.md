@@ -22,12 +22,23 @@ class Hoge extends TrackViewModel {
     reader('fuga');   // Define `hoge.fuga`
     writer('piyo');   // Define `hoge.piyo=`
 
-    // Can define multiple.
-    accessor('foo', 'bar');
+    // Define accessor with onchange callback.
+    accessor('foo', {onchanage: ((newly, older) => alert(`change ${older} to ${newly}`))});
+
+    // Define async reader.
+    // - cache:   60sec
+    // - default: []
+    asyncReader('bars', {default: [], expiresIn: 60}, this._fetchBars);
 
     // Define validation of #hoge.
     // (require value, and value.length <= 100)
     validate('hoge', {presence: true, length: {max: 100}});
+  }
+
+  _fetchBars() {
+    if (this.foo) {
+      return m.request(`/bars?foo_id=${foo.id}`); // @see mithril doc `m.request`
+    }
   }
 }
 ```
@@ -35,17 +46,34 @@ class Hoge extends TrackViewModel {
 ```javascript
 const hoge = new Hoge({piyo: 'PIYO'});
 
-hoge.validate('hoge'); // => falsey
-hoge.errors['hoge'];   // => Error {type: 'blank'}
-hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
+hoge.hoge = 'hogehoge!';
+hoge.hoge; // => "hogehoge!"
 
-hoge.hoge = 'abcdefg';
-hoge.validate('hoge'); // => truthy
-hoge.errors['hoge'];   // => null, undefined (falsey)
+hoge.validate('hoge').then(() => {
+  // When success.
+  hoge.errors['hoge'];   // => null
+}).catch(() => {
+  // When fail.
+  hoge.errors['hoge'];   // => Error {type: 'blank'}
+  hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
+});
 
-
+hoge.validateAll().then(/*...*/).catch(/*...*/);
 
 hoge.toObject(); // => Object {hoge: 'abcdefg'}
+
+
+// ## asyncReader ##
+hoge.bars; // [];
+hoge.foo = {id: 1};
+hoge.bars; // [];
+
+// after fetch
+hoge.bars; // [{id: 1}, {id: 2}]
+
+// clear cache
+hoge._bars.clear();
+
 ```
 
 ## Build-in validators
@@ -70,9 +98,11 @@ hoge.toObject(); // => Object {hoge: 'abcdefg'}
 
 ```javascript
 const Error = require('track-view-model/validators/error');
-const checkHoge = function(value) {
+const checkHoge = function(value, resolve, reject) {
   if (value != 'hoge') {
-    return new Error('is not Hoge.');
+    reject(new Error('is not Hoge.'));
+  } else {
+    resolve();
   }
 };
 
