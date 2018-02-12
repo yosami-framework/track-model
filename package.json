@@ -1,6 +1,6 @@
 {
   "name": "track-view-model",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A model of view.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-view-model.git",
