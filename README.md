@@ -35,14 +35,16 @@ class Hoge extends TrackViewModel {
 ```javascript
 const hoge = new Hoge({piyo: 'PIYO'});
 
-hoge.validate('hoge'); // => falsey
-hoge.errors['hoge'];   // => Error {type: 'blank'}
-hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
+hoge.validate('hoge').then(() => {
+  // When success.
+  hoge.errors['hoge'];   // => null
+}).catch(() => {
+  // When fail.
+  hoge.errors['hoge'];   // => Error {type: 'blank'}
+  hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
+});
 
-hoge.hoge = 'abcdefg';
-hoge.validate('hoge'); // => truthy
-hoge.errors['hoge'];   // => null, undefined (falsey)
-
+hoge.validateAll().then(/*...*/).catch(/*...*/);
 
 
 hoge.toObject(); // => Object {hoge: 'abcdefg'}
@@ -70,9 +72,11 @@ hoge.toObject(); // => Object {hoge: 'abcdefg'}
 
 ```javascript
 const Error = require('track-view-model/validators/error');
-const checkHoge = function(value) {
+const checkHoge = function(value, resolve, reject) {
   if (value != 'hoge') {
-    return new Error('is not Hoge.');
+    reject(new Error('is not Hoge.'));
+  } else {
+    resolve();
   }
 };
 

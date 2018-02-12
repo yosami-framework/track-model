@@ -11,16 +11,25 @@ t.describe('FormatValidator', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => validator.validate(value));
-    let value = null;
+    const subject = ( () => validator.validate(value, resolve, reject));
+    let value   = null;
+    let resolve = null;
+    let reject  = null;
+
+    t.beforeEach(() => {
+      resolve = t.spy();
+      reject = t.spy();
+    });
 
     t.context('When has no error.', () => {
       t.beforeEach(() => {
         value = 'hoge@hoge.com';
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -29,8 +38,11 @@ t.describe('FormatValidator', () => {
         value = 'abcdefg';
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('invalid');
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('invalid');
       });
     });
   });

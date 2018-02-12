@@ -9,16 +9,25 @@ t.describe('PresenceValidator', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => validator.validate(value));
-    let value = null;
+    const subject = ( () => validator.validate(value, resolve, reject));
+    let value   = null;
+    let resolve = null;
+    let reject  = null;
+
+    t.beforeEach(() => {
+      resolve = t.spy();
+      reject = t.spy();
+    });
 
     t.context('When value is 0', () => {
       t.beforeEach(() => {
         value = 0;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -27,8 +36,11 @@ t.describe('PresenceValidator', () => {
         value = '';
       });
 
-      t.it('Return falsey', () => {
-        t.expect(subject().type).equals('blank');
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('blank');
       });
     });
 
@@ -37,8 +49,11 @@ t.describe('PresenceValidator', () => {
         value = undefined;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(subject().type).equals('blank');
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('blank');
       });
     });
 
@@ -47,8 +62,11 @@ t.describe('PresenceValidator', () => {
         value = null;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(subject().type).equals('blank');
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('blank');
       });
     });
   });

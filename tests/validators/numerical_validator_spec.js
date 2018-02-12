@@ -11,16 +11,25 @@ t.describe('NumericalValidator', () => {
   });
 
   t.describe('#validate', () => {
-    const subject = ( () => validator.validate(value));
-    let value = null;
+    const subject = ( () => validator.validate(value, resolve, reject));
+    let value   = null;
+    let resolve = null;
+    let reject  = null;
+
+    t.beforeEach(() => {
+      resolve = t.spy();
+      reject = t.spy();
+    });
 
     t.context('When has no error', () => {
       t.beforeEach(() => {
         value = 8;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -29,8 +38,10 @@ t.describe('NumericalValidator', () => {
         value = undefined;
       });
 
-      t.it('Return falsey', () => {
-        t.expect(!!subject()).equals(false);
+      t.it('Call resolve', () => {
+        subject();
+        t.expect(resolve.callCount).equals(1);
+        t.expect(reject.callCount).equals(0);
       });
     });
 
@@ -39,8 +50,11 @@ t.describe('NumericalValidator', () => {
         value = '123';
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('not_a_number');
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('not_a_number');
       });
     });
 
@@ -49,9 +63,12 @@ t.describe('NumericalValidator', () => {
         value = 4;
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('greater_than');
-        t.expect(subject().options.count).equals(5);
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('greater_than');
+        t.expect(reject.args[0].options.count).equals(5);
       });
     });
 
@@ -60,9 +77,12 @@ t.describe('NumericalValidator', () => {
         value = 11;
       });
 
-      t.it('Return error message', () => {
-        t.expect(subject().type).equals('less_than');
-        t.expect(subject().options.count).equals(10);
+      t.it('Call reject', () => {
+        subject();
+        t.expect(resolve.callCount).equals(0);
+        t.expect(reject.callCount).equals(1);
+        t.expect(reject.args[0].type).equals('less_than');
+        t.expect(reject.args[0].options.count).equals(10);
       });
     });
   });
