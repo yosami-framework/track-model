@@ -14,7 +14,8 @@ t.describe('TrackViewModel', () => {
       static definer() {
         name('mock');
 
-        accessor('hoge', 'piyo');
+        accessor('hoge');
+        accessor('piyo');
 
         validate('hoge', {length: {max: 10}});
         validate('piyo', {function: {validate: this.validatePiyo}});

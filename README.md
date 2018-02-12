@@ -22,8 +22,8 @@ class Hoge extends TrackViewModel {
     reader('fuga');   // Define `hoge.fuga`
     writer('piyo');   // Define `hoge.piyo=`
 
-    // Can define multiple.
-    accessor('foo', 'bar');
+    // Define accessor with onchange callback.
+    accessor('foo', {onchanage: ((newly, older) => alert(`change ${older} to ${newly}`))});
 
     // Define validation of #hoge.
     // (require value, and value.length <= 100)
