@@ -1,6 +1,6 @@
 {
   "name": "track-model",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A model of track.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-model.git",

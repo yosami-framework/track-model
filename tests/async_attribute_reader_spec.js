@@ -19,7 +19,7 @@ t.describe('AsyncAttributeReader', () => {
     options = {default: {}};
   });
 
-  t.describe('value', () => {
+  t.describe('.value', () => {
     const subject = (() => reader().value);
 
     t.it('Call block', () => {
@@ -88,6 +88,35 @@ t.describe('AsyncAttributeReader', () => {
             t.expect(reader()._expiredAt).equals(Date.now() + 10000);
           });
         });
+      });
+    });
+  });
+
+  t.describe('#setObject', () => {
+    const subject = (() => reader().setObject({value: 'mock', expiredAt: 123}));
+
+    t.it('Set value', () => {
+      subject();
+      t.expect(reader()._expiredAt).equals(123);
+      t.expect(reader()._value).equals('mock');
+    });
+  });
+
+  t.describe('#toObject', () => {
+    const subject = (() => reader().toObject());
+
+    t.beforeEach(() => {
+      reader()._expiredAt = 123;
+      reader()._value = 'mock';
+    });
+
+    t.it('Return key-value pair', () => {
+      subject();
+      t.expect(
+        reader().toObject()
+      ).deepEquals({
+        expiredAt: 123,
+        value:     'mock',
       });
     });
   });
