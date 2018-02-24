@@ -16,6 +16,7 @@ t.describe('TrackModel', () => {
 
         accessor('hoge');
         accessor('piyo');
+        reader('foo');
 
         validate('hoge', {length: {max: 10}});
         validate('piyo', {function: {validate: this.validatePiyo}});

@@ -1,6 +1,5 @@
-const t                    = require('track-spec');
-const AsyncAttributeReader = require('../../lib/async_attribute_reader.js');
-const AttributeBuilder     = require('../../lib/builders/attribute_builder.js');
+const t                = require('track-spec');
+const AttributeBuilder = require('../../lib/builders/attribute_builder.js');
 
 t.describe('AttributeBuilder', () => {
   let builder = null;
@@ -89,9 +88,33 @@ t.describe('AttributeBuilder', () => {
 
     t.it('Create async reader', () => {
       subject();
-
-      t.expect(mock._hoge instanceof AsyncAttributeReader).equals(true);
       t.expect(mock.hoge).equals('piyo');
+    });
+
+    t.it('Create selialize data getter', () => {
+      subject();
+
+      mock._hoge._expiredAt = 123;
+      mock._hoge._value = 'mock';
+
+      t.expect(
+        mock.hogeReader
+      ).deepEquals({
+        expiredAt: 123,
+        value:     'mock',
+      });
+    });
+
+    t.it('Create selialize data setter', () => {
+      subject();
+
+      mock.hogeReader = {
+        expiredAt: 123,
+        value:     'mock',
+      };
+
+      t.expect(mock._hoge._expiredAt).equals(123);
+      t.expect(mock._hoge._value).equals('mock');
     });
   });
 });

@@ -72,7 +72,7 @@ hoge.bars; // [];
 hoge.bars; // [{id: 1}, {id: 2}]
 
 // clear cache
-hoge._bars.clear();
+hoge.barsReader.clear();
 
 ```
 
