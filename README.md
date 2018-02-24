@@ -1,4 +1,4 @@
-# TrackViewModel
+# TrackModel
 A model of view.
 
 ## Installation
@@ -12,9 +12,9 @@ npm install track-view-model
 ## Usage
 
 ```javascript
-const TrackViewModel = require('track-view-model');
+const TrackModel = require('track-view-model');
 
-class Hoge extends TrackViewModel {
+class Hoge extends TrackModel {
   static definer() {
     name('hoge'); // Define model name. **Required**
 
@@ -97,7 +97,7 @@ hoge._bars.clear();
 ### FunctionValidatorExample
 
 ```javascript
-const Error = require('track-view-model/validators/error');
+const Error = require('track-model/validators/error');
 const checkHoge = function(value, resolve, reject) {
   if (value != 'hoge') {
     reject(new Error('is not Hoge.'));

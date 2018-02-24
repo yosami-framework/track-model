@@ -1,13 +1,13 @@
 const t               = require('track-spec');
-const TrackViewModel  = require('../lib/index.js');
+const TrackModel      = require('../lib/index.js');
 const LengthValidator = require('../lib/validators/length_validator');
 const Error           = require('../lib/validators/error');
 
-t.describe('TrackViewModel', () => {
+t.describe('TrackModel', () => {
   let mock = null;
 
   t.beforeEach(() => {
-    mock = new (class extends TrackViewModel {
+    mock = new (class extends TrackModel {
       /**
        * Definitions of model.
        */
