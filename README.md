@@ -1,6 +1,8 @@
 # TrackModel
 A model of view.
 
+[![Build Status](https://travis-ci.org/yosami-framework/track-model.svg?branch=master)](https://travis-ci.org/yosami-framework/track-model)
+
 ## Installation
 
 ### npm
