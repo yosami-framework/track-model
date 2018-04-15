@@ -1,6 +1,6 @@
-const t     = require('track-spec');
-const I18n  = require('track-i18n');
-const Error = require('../../lib/validators/error.js');
+const t         = require('track-spec');
+const TrackI18n = require('track-i18n');
+const Error     = require('../../lib/validators/error.js');
 
 t.describe('Error', () => {
   let error   = null;
@@ -10,8 +10,8 @@ t.describe('Error', () => {
     options = {max: 1000};
     error = new Error('piyo', options);
 
-    I18n.load({
-      track_viewmodel: {
+    TrackI18n.load({
+      track_model: {
         attributes: {
           hoge: {
             fuga: 'FUGA',
@@ -45,12 +45,13 @@ t.describe('Error', () => {
   });
 
   t.describe('#setDetail', () => {
-    const subject = ( () => error.setDetail('hoge', 'fuga'));
+    const subject = ( () => error.setDetail('hoge', 'fuga', TrackI18n));
 
     t.it('Set values', () => {
       subject();
       t.expect(error._modelName).equals('hoge');
       t.expect(error._attributeName).equals('fuga');
+      t.expect(error._i18n).equals(TrackI18n);
       t.expect(error._options.attribute).equals('FUGA');
     });
   });
@@ -59,7 +60,7 @@ t.describe('Error', () => {
     const subject = (() => error.t);
 
     t.beforeEach(() => {
-      error.setDetail('hoge', 'fuga');
+      error.setDetail('hoge', 'fuga', TrackI18n);
     });
 
     t.it('Set values', () => {

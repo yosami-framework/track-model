@@ -1,7 +1,6 @@
-const t               = require('track-spec');
-const TrackModel      = require('../lib/index.js');
-const LengthValidator = require('../lib/validators/length_validator');
-const Error           = require('../lib/validators/error');
+const t          = require('track-spec');
+const TrackModel = require('../lib/index.js');
+const Error      = require('../lib/validators/error');
 
 t.describe('TrackModel', () => {
   let mock = null;
@@ -18,8 +17,8 @@ t.describe('TrackModel', () => {
         accessor('piyo');
         reader('foo');
 
-        validate('hoge', {length: {max: 10}});
-        validate('piyo', {function: {validate: this.validatePiyo}});
+        validates('hoge', {length: {max: 10}});
+        validates('piyo', {function: {validate: this.validatePiyo}});
       }
 
       /**
@@ -32,25 +31,6 @@ t.describe('TrackModel', () => {
         reject(new Error('is_not_piyo'));
       }
     })();
-  });
-
-  t.describe('attributes', () => {
-    t.it('Defined attributes', () => {
-      mock.hoge = 'HOGE';
-
-      t.expect(mock.hoge).equals('HOGE');
-      t.expect(mock._hoge).equals('HOGE');
-    });
-  });
-
-  t.describe('validations', () => {
-    t.it('Defined validations', () => {
-      const validation = mock._validations['hoge'];
-      const validator  = validation.validators[0];
-
-      t.expect(validator instanceof LengthValidator).equals(true);
-      t.expect(validator.options).deepEquals({max: 10});
-    });
   });
 
   t.describe('#errors', () => {
@@ -117,7 +97,8 @@ t.describe('TrackModel', () => {
         return new Promise((resolve, reject) => {
           subject().then(() => {
             reject('Be not rejected.');
-          }).catch(() => {
+          }).catch((error) => {
+            t.expect(error.type).equals('too_long');
             resolve();
           });
         });
@@ -126,6 +107,7 @@ t.describe('TrackModel', () => {
       t.it('Set error', () => {
         return subject().catch(() => {
           t.expect(mock.errors['hoge'].type).equals('too_long');
+          t.expect(mock.errors['hoge'].t).equals('translation missing: track_model.errors.too_long');
           t.expect(mock.errors['hoge'].options.count).equals(10);
         });
       });

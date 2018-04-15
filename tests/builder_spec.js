@@ -1,12 +1,12 @@
 const t               = require('track-spec');
-const Builder         = require('../lib/builder.js');
 const LengthValidator = require('../lib/validators/length_validator');
+const TrackModel      = require('../lib/index.js');
 
 t.describe('Builder', () => {
   let mock = null;
 
   t.beforeEach(() => {
-    mock = new (class {
+    mock = new (class extends TrackModel {
       /**
        * Definitions of model.
        */
@@ -17,46 +17,14 @@ t.describe('Builder', () => {
         reader('fuga');
         writer('piyo');
 
-        validate('hoge', {length: {max: 10}});
+        validates('hoge', {length: {max: 10}});
       }
     })();
-    Builder.build(mock);
-  });
-
-  t.context('When definer is not defined', () => {
-    t.it('Raise error', () => {
-      let error = null;
-      try {
-        Builder.build(new (class { })());
-      } catch (e) {
-        error = e;
-      }
-      t.expect(error.message).equals('.definer is undefined.');
-    });
-  });
-
-  t.context('When name is not defined', () => {
-    t.it('Raise error', () => {
-      let error = null;
-      try {
-        Builder.build(new (class {
-          /**
-           * Definitions of model.
-           */
-          static definer() {
-            accessor('hoge');
-          }
-        })());
-      } catch (e) {
-        error = e;
-      }
-      t.expect(error.message).equals('Model name is undefined. A definer must define `name("model_name")`.');
-    });
   });
 
   t.describe('#name', () => {
     t.it('Defined name reader', () => {
-      t.expect(mock.__modelName).equals('mock_model');
+      t.expect(mock.__name).equals('mock_model');
     });
   });
 
@@ -86,7 +54,7 @@ t.describe('Builder', () => {
     });
   });
 
-  t.describe('validations', () => {
+  t.describe('#validates', () => {
     t.it('Defined validations', () => {
       const validation = mock._validations['hoge'];
       const validator  = validation.validators[0];
