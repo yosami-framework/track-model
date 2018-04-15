@@ -97,7 +97,8 @@ t.describe('TrackModel', () => {
         return new Promise((resolve, reject) => {
           subject().then(() => {
             reject('Be not rejected.');
-          }).catch(() => {
+          }).catch((error) => {
+            t.expect(error.type).equals('too_long');
             resolve();
           });
         });
@@ -106,6 +107,7 @@ t.describe('TrackModel', () => {
       t.it('Set error', () => {
         return subject().catch(() => {
           t.expect(mock.errors['hoge'].type).equals('too_long');
+          t.expect(mock.errors['hoge'].t).equals('translation missing: track_model.errors.too_long');
           t.expect(mock.errors['hoge'].options.count).equals(10);
         });
       });
