@@ -82,39 +82,4 @@ t.describe('AttributeBuilder', () => {
       t.expect(mock._hoge).equals('HOGE');
     });
   });
-
-  t.describe('#asyncReader', () => {
-    const subject = (() => builder.asyncReader('hoge', {default: 'piyo'}, (() => null)));
-
-    t.it('Create async reader', () => {
-      subject();
-      t.expect(mock.hoge).equals('piyo');
-    });
-
-    t.it('Create selialize data getter', () => {
-      subject();
-
-      mock._hoge._expiredAt = 123;
-      mock._hoge._value = 'mock';
-
-      t.expect(
-        mock.hogeReader
-      ).deepEquals({
-        expiredAt: 123,
-        value:     'mock',
-      });
-    });
-
-    t.it('Create selialize data setter', () => {
-      subject();
-
-      mock.hogeReader = {
-        expiredAt: 123,
-        value:     'mock',
-      };
-
-      t.expect(mock._hoge._expiredAt).equals(123);
-      t.expect(mock._hoge._value).equals('mock');
-    });
-  });
 });

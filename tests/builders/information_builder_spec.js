@@ -16,7 +16,7 @@ t.describe('InformationBuilder', () => {
     t.it('Create reader', () => {
       subject();
 
-      t.expect(mock.__modelName).equals('hoge');
+      t.expect(mock.__name).equals('hoge');
     });
   });
 });
