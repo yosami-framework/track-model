@@ -93,12 +93,10 @@ t.describe('TrackModel', () => {
         mock.hoge = 'abcdefghijk';
       });
 
-      t.it('Reject', () => {
+      t.it('Resolve with false', () => {
         return new Promise((resolve, reject) => {
-          subject().then(() => {
-            reject('Be not rejected.');
-          }).catch((error) => {
-            t.expect(error.type).equals('too_long');
+          subject().then((result) => {
+            t.expect(result).equals(false);
             resolve();
           });
         });
@@ -118,12 +116,11 @@ t.describe('TrackModel', () => {
         mock.hoge = 'abc';
       });
 
-      t.it('Resolve', () => {
+      t.it('Resolve with true', () => {
         return new Promise((resolve, reject) => {
-          subject().then(() => {
+          subject().then((result) => {
+            t.expect(result).equals(true);
             resolve();
-          }).catch(() => {
-            reject('Be not resolved.');
           });
         });
       });
@@ -141,11 +138,10 @@ t.describe('TrackModel', () => {
         mock.piyo = 'hahaha';
       });
 
-      t.it('Reject', () => {
+      t.it('Resolve with false', () => {
         return new Promise((resolve, reject) => {
-          subject().then(() => {
-            reject('Be not rejected.');
-          }).catch(() => {
+          subject().then((result) => {
+            t.expect(result).equals(false);
             resolve();
           });
         });
