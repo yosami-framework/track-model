@@ -40,13 +40,8 @@ const hoge = new Hoge({piyo: 'PIYO'});
 hoge.hoge = 'hogehoge!';
 hoge.hoge; // => "hogehoge!"
 
-hoge.validate('hoge').then(() => {
-  // When success.
-  hoge.errors['hoge'];   // => null
-}).catch(() => {
-  // When fail.
-  hoge.errors['hoge'];   // => Error {type: 'blank'}
-  hoge.errors['hoge'].t; // => Translated error message. @see `track-i18n`
+hoge.validate('hoge').then((result) => {
+  console.log(result);
 });
 
 hoge.validateAll().then(/*...*/).catch(/*...*/);
