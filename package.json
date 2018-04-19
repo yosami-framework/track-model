@@ -1,6 +1,6 @@
 {
   "name": "track-model",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A model of track.",
   "main": "lib/index.js",
   "repository": "yosami-framework/track-model.git",
@@ -20,6 +20,7 @@
     "track-spec": "0.0.4"
   },
   "peerDependencies": {
+    "mithril": "1.x",
     "track-dsl": "0.0.x",
     "track-i18n": "0.0.x"
   }

@@ -1,3 +1,4 @@
+require('../spec_helper');
 const t                = require('track-spec');
 const AttributeBuilder = require('../../lib/builders/attribute_builder.js');
 

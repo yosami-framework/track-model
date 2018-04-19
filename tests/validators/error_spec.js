@@ -1,3 +1,4 @@
+require('../spec_helper');
 const t         = require('track-spec');
 const TrackI18n = require('track-i18n');
 const Error     = require('../../lib/validators/error.js');

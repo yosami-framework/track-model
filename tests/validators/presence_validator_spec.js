@@ -1,3 +1,4 @@
+require('../spec_helper');
 const t         = require('track-spec');
 const Validator = require('../../lib/validators/presence_validator.js');
 
