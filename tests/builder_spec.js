@@ -1,3 +1,4 @@
+require('./spec_helper');
 const t               = require('track-spec');
 const LengthValidator = require('../lib/validators/length_validator');
 const TrackModel      = require('../lib/index.js');

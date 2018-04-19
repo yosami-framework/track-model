@@ -1,6 +1,8 @@
+require('./spec_helper');
 const t          = require('track-spec');
 const TrackModel = require('../lib/index.js');
 const Error      = require('../lib/validators/error');
+const m          = require('mithril');
 
 t.describe('TrackModel', () => {
   let mock = null;
@@ -86,6 +88,7 @@ t.describe('TrackModel', () => {
 
     t.beforeEach(() => {
       attr = 'hoge';
+      m.redraw = t.spy();
     });
 
     t.context('When has error', () => {
@@ -103,10 +106,16 @@ t.describe('TrackModel', () => {
       });
 
       t.it('Set error', () => {
-        return subject().catch(() => {
+        return subject().then(() => {
           t.expect(mock.errors['hoge'].type).equals('too_long');
           t.expect(mock.errors['hoge'].t).equals('translation missing: track_model.errors.too_long');
           t.expect(mock.errors['hoge'].options.count).equals(10);
+        });
+      });
+
+      t.it('Call m.redraw', () => {
+        return subject().then(() => {
+          t.expect(m.redraw.callCount).equals(1);
         });
       });
     });
@@ -130,6 +139,12 @@ t.describe('TrackModel', () => {
           t.expect(mock.errors['hoge']).equals(null);
         });
       });
+
+      t.it('Call m.redraw', () => {
+        return subject().then(() => {
+          t.expect(m.redraw.callCount).equals(1);
+        });
+      });
     });
 
     t.context('When FunctionValidator', () => {
@@ -148,7 +163,7 @@ t.describe('TrackModel', () => {
       });
 
       t.it('Set error', () => {
-        return subject().catch(() => {
+        return subject().then(() => {
           t.expect(mock.errors['piyo'].type).equals('is_not_piyo');
         });
       });

@@ -1,3 +1,4 @@
+require('../spec_helper');
 const t                  = require('track-spec');
 const InformationBuilder = require('../../lib/builders/information_builder.js');
 
